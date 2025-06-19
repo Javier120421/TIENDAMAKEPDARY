@@ -1,26 +1,46 @@
 <!DOCTYPE html>
 <html lang="es-419">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DARYMAKEUP</title>
   <style>
-    /* Estilos generales */
-    body {
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
       background-color: #000;
       color: #fff;
       font-family: 'Arial', sans-serif;
+    }
+
+    /* El canvas de fondo */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
+
+    /* Contenido principal por encima */
+    .contenido {
+      position: relative;
+      z-index: 10;
       text-align: center;
+      padding: 40px 20px;
     }
 
     h1 {
-      margin-top: 40px;
       font-size: 3rem;
+      margin-top: 40px;
     }
 
-    /* Logo */
     .logo {
       margin: 20px 0;
     }
@@ -30,7 +50,6 @@
       height: auto;
     }
 
-    /* Contenedor de botones */
     .button-container {
       margin: 50px auto;
       display: flex;
@@ -57,7 +76,6 @@
       transform: scale(1.05);
     }
 
-    /* Responsivo para pantallas pequeñas */
     @media (max-width: 600px) {
       h1 {
         font-size: 2rem;
@@ -76,18 +94,86 @@
 </head>
 <body>
 
-  <h1>DARYMAKEUP</h1>
+  <!-- Estrellas fugaces en el fondo -->
+  <canvas id="canvas"></canvas>
 
-  <div class="logo">
-    <img src="https://i.ibb.co/Z6gvWL0n/LOGO-MIO.jpg" alt="Logo de DARYMAKEUP">
+  <!-- Contenido principal -->
+  <div class="contenido">
+    <h1>DARYMAKEUP</h1>
+
+    <div class="logo">
+      <img src="https://i.ibb.co/Z6gvWL0n/LOGO-MIO.jpg" alt="Logo de DARYMAKEUP">
+    </div>
+
+    <div class="button-container">
+      <a href="accesorios.html">Accesorios</a>
+      <a href="maquillaje.html">Maquillaje</a>
+      <a href="productos-naturales.html">Productos Naturales</a>
+      <a href="facial.html">Cuidado Facial</a>
+    </div>
   </div>
 
-  <div class="button-container">
-    <a href="accesorios.html">Accesorios</a>
-    <a href="maquillaje.html">Maquillaje</a>
-    <a href="productos-naturales.html">Productos Naturales</a>
-    <a href="facial.html">Cuidado Facial</a>
-  </div>
+  <!-- Script estrellas fugaces -->
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const stars = [];
+
+    function createStar() {
+      return {
+        x: Math.random() * width,
+        y: -10,
+        size: Math.random() * 2 + 1,
+        speed: Math.random() * 2 + 1,
+        length: Math.random() * 60 + 30,
+        opacity: Math.random() * 0.8 + 0.2
+      };
+    }
+
+    function drawStar(star) {
+      const grad = ctx.createLinearGradient(star.x, star.y, star.x + star.length, star.y + star.length);
+      grad.addColorStop(0, `rgba(255, 215, 0, ${star.opacity})`);
+      grad.addColorStop(1, `rgba(255, 215, 0, 0)`);
+      ctx.beginPath();
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = star.size;
+      ctx.moveTo(star.x, star.y);
+      ctx.lineTo(star.x + star.length, star.y + star.length);
+      ctx.stroke();
+    }
+
+    function updateStars() {
+      ctx.clearRect(0, 0, width, height);
+      if (stars.length < 80 && Math.random() < 0.2) {
+        stars.push(createStar());
+      }
+
+      for (let i = stars.length - 1; i >= 0; i--) {
+        const star = stars[i];
+        drawStar(star);
+        star.x += star.speed;
+        star.y += star.speed;
+        if (star.y > height || star.x > width) {
+          stars.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(updateStars);
+    }
+
+    updateStars();
+  </script>
 
 </body>
 </html>
+
