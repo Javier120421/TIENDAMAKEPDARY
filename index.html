@@ -12,13 +12,12 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      min-height: 100vh;
       background-color: #000;
       color: #fff;
       font-family: 'Arial', sans-serif;
     }
 
-    /* El canvas de fondo */
     canvas {
       position: fixed;
       top: 0;
@@ -26,19 +25,23 @@
       width: 100vw;
       height: 100vh;
       z-index: 0;
+      pointer-events: none;
     }
 
-    /* Contenido principal por encima */
     .contenido {
       position: relative;
       z-index: 10;
       text-align: center;
       padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     h1 {
       font-size: 3rem;
-      margin-top: 40px;
+      margin-bottom: 20px;
     }
 
     .logo {
@@ -51,12 +54,14 @@
     }
 
     .button-container {
-      margin: 50px auto;
+      margin-top: 40px;
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 20px;
       max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .button-container a {
@@ -94,10 +99,8 @@
 </head>
 <body>
 
-  <!-- Estrellas fugaces en el fondo -->
   <canvas id="canvas"></canvas>
 
-  <!-- Contenido principal -->
   <div class="contenido">
     <h1>DARYMAKEUP</h1>
 
@@ -113,15 +116,13 @@
     </div>
   </div>
 
-  <!-- Script estrellas fugaces -->
   <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    let width, height;
 
     function resizeCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
 
     window.addEventListener('resize', resizeCanvas);
@@ -131,7 +132,7 @@
 
     function createStar() {
       return {
-        x: Math.random() * width,
+        x: Math.random() * canvas.width,
         y: -10,
         size: Math.random() * 2 + 1,
         speed: Math.random() * 2 + 1,
@@ -153,7 +154,8 @@
     }
 
     function updateStars() {
-      ctx.clearRect(0, 0, width, height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       if (stars.length < 80 && Math.random() < 0.2) {
         stars.push(createStar());
       }
@@ -163,7 +165,7 @@
         drawStar(star);
         star.x += star.speed;
         star.y += star.speed;
-        if (star.y > height || star.x > width) {
+        if (star.y > canvas.height || star.x > canvas.width) {
           stars.splice(i, 1);
         }
       }
@@ -176,4 +178,3 @@
 
 </body>
 </html>
-
