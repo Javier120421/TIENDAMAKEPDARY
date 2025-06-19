@@ -5,130 +5,144 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DARYMAKEUP - Accesorios</title>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #000;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #000;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
 
-    header {
-      position: relative;
-      padding: 20px;
-    }
+header {
+  position: relative;
+  padding: 20px;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
+header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
 
-    .logo {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 100px;
-      height: auto;
-    }
+.logo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 100px;
+  height: auto;
+}
 
-    .subtitulo h2 {
-      margin-top: 20px;
-      font-size: 1.5rem;
-      color: #ccc;
-    }
+.subtitulo h2 {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  color: #ccc;
+}
 
-    .galeria {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 30px;
-      padding: 30px;
-      justify-items: center;
-      max-width: 1300px;
-      margin: auto;
-    }
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  max-width: 1300px;
+  margin: auto;
+  gap: 30px;
+  padding: 30px;
+  justify-items: center;
+}
 
-    .producto {
-      background-color: #222;
-      border-radius: 8px;
-      padding: 10px;
-      width: 100%;
-      max-width: 200px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-    }
+@media (min-width: 1300px) {
+  .galeria {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
 
-    .producto img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
+.producto {
+  background-color: #222;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 220px;
+}
 
-    .precio {
-      font-size: 1.2rem;
-      margin-top: 10px;
-      color: #ff4081;
-    }
+.producto img {
+  width: 100%;
+  height: 280px; /* Imagen más alta */
+  object-fit: cover;
+  border-radius: 8px;
+}
 
-    .descripcion {
-      font-size: 1rem;
-      margin-top: 5px;
-      color: #ccc;
-    }
+.precio {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  color: #ff4081;
+}
 
-    .boton-whatsapp {
-      margin-top: 10px;
-      background-color: #25D366;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 5px;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
+.descripcion {
+  font-size: 1rem;
+  margin-top: 5px;
+  color: #ccc;
+}
 
-    .boton-whatsapp:hover {
-      background-color: #1ebe5b;
-    }
+.boton-whatsapp {
+  margin-top: 10px;
+  background-color: #25D366;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
 
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 2rem;
-      }
+.boton-whatsapp:hover {
+  background-color: #1ebe5b;
+}
 
-      .logo {
-        width: 80px;
-        top: 15px;
-        right: 15px;
-      }
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2rem;
+  }
 
-      .galeria {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 20px;
-        padding: 20px;
-      }
+  .logo {
+    width: 80px;
+    top: 15px;
+    right: 15px;
+  }
 
-      .producto img {
-        height: 180px;
-      }
-    }
+  .galeria {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
 
-    @media (max-width: 480px) {
-      .galeria {
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        padding: 15px;
-      }
+  .producto {
+    max-width: 180px;
+  }
 
-      .producto img {
-        height: 150px;
-      }
+  .producto img {
+    height: 240px; /* Más alta en pantallas medianas */
+  }
+}
 
-      .producto {
-        max-width: 100%;
-      }
-    }
+@media (max-width: 480px) {
+  .galeria {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 15px;
+  }
+
+  .producto {
+    max-width: 100%;
+  }
+
+  .producto img {
+    height: 200px; /* Más alta en móviles */
+  }
+}
+
   </style>
 </head>
 <body>
