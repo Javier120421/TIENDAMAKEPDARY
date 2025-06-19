@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es-419">
 <head>
@@ -476,7 +477,128 @@
         window.open(url, '_blank');
       });
     });
+const carrito = [];
+
+  function actualizarCarrito() {
+    const lista = document.getElementById('lista-carrito');
+    const totalTexto = document.getElementById('total');
+    lista.innerHTML = '';
+    let total = 0;
+
+    carrito.forEach((item, index) => {
+      total += item.precio * item.cantidad;
+      const li = document.createElement('li');
+      li.innerHTML = `
+        ${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toLocaleString()}
+        <button onclick="quitarDelCarrito(${index})" style="margin-left:10px; color:red; background:none; border:none; cursor:pointer;">❌</button>
+      `;
+      lista.appendChild(li);
+    });
+
+    totalTexto.textContent = `Total: $${total.toLocaleString()}`;
+  }
+
+  function quitarDelCarrito(index) {
+    carrito.splice(index, 1);
+    actualizarCarrito();
+  }
+
+  function agregarAlCarrito(nombre, precio, cantidad = 1) {
+    const existente = carrito.find(p => p.nombre === nombre);
+    if (existente) {
+      existente.cantidad += cantidad;
+    } else {
+      carrito.push({ nombre, precio, cantidad });
+    }
+    actualizarCarrito();
+  }
+
+  function enviarWhatsApp() {
+    if (carrito.length === 0) return alert("El carrito está vacío.");
+
+    let mensaje = "¡Hola! Quiero comprar los siguientes productos en DARYMAKEUP:\n\n";
+    let total = 0;
+
+    carrito.forEach(item => {
+      const subtotal = item.precio * item.cantidad;
+      mensaje += `🛍️ ${item.nombre} x${item.cantidad} = $${subtotal}\n`;
+      total += subtotal;
+    });
+
+    mensaje += `\n💰 Total: $${total.toLocaleString()}`;
+
+    const url = `https://wa.me/573222860592?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
+  }
+
+  // Botones individuales de productos
+  document.querySelectorAll('.producto').forEach(prod => {
+    const boton = prod.querySelector('.boton-whatsapp');
+    const nombre = prod.querySelector('.descripcion').innerText;
+    const precioTexto = prod.querySelector('.precio').innerText;
+    const precio = parseInt(precioTexto.replace(/\D/g, ''));
+
+    // Crear input de cantidad
+    const cantidadInput = document.createElement('input');
+    cantidadInput.type = 'number';
+    cantidadInput.value = 1;
+    cantidadInput.min = 1;
+    cantidadInput.style.width = '50px';
+    cantidadInput.style.marginTop = '6px';
+
+    // Crear botón añadir al carrito
+    const botonCarrito = document.createElement('button');
+    botonCarrito.textContent = "Añadir al carrito";
+    botonCarrito.style.marginTop = "6px";
+    botonCarrito.style.marginLeft = "6px";
+    botonCarrito.style.padding = "6px 10px";
+    botonCarrito.style.borderRadius = "5px";
+    botonCarrito.style.border = "none";
+    botonCarrito.style.cursor = "pointer";
+    botonCarrito.style.backgroundColor = "#ff4081";
+    botonCarrito.style.color = "#fff";
+
+    botonCarrito.onclick = () => {
+      const cantidad = parseInt(cantidadInput.value);
+      if (cantidad > 0) agregarAlCarrito(nombre, precio, cantidad);
+    };
+
+    // Contenedor de input y botón
+    const contenedorBotones = document.createElement('div');
+    contenedorBotones.style.marginTop = "8px";
+    contenedorBotones.appendChild(cantidadInput);
+    contenedorBotones.appendChild(botonCarrito);
+    prod.appendChild(contenedorBotones);
+
+    // Funcionalidad del botón WhatsApp individual
+    boton.onclick = () => {
+      const imgSrc = prod.querySelector('img').src;
+      const mensaje = `Hola, vi este producto en DARYMAKEUP y estoy interesado:\n\n🖼️ Imagen: ${imgSrc}\n📝 Descripción: ${nombre}\n💰 Precio: ${precioTexto}`;
+      const url = `https://wa.me/573222860592?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, '_blank');
+    };
+  });
   </script>
+
+<!-- Botón flotante del carrito -->
+<div id="carrito-flotante" style="
+  position: fixed; 
+  top: 50%; 
+  right: 10px; 
+  background-color: #fff; 
+  color: #000; 
+  padding: 15px; 
+  border-radius: 10px; 
+  box-shadow: 0 0 10px rgba(255,255,255,0.3); 
+  max-width: 300px;
+  z-index: 9999;
+  transform: translateY(-50%);
+">
+  <h3>🛒 Carrito</h3>
+  <ul id="lista-carrito" style="list-style: none; padding: 0; max-height: 300px; overflow-y: auto;"></ul>
+  <p id="total">Total: $0</p>
+  <button onclick="enviarWhatsApp()" style="margin-top: 10px; background-color: #25D366; color: #fff; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">Comprar por WhatsApp</button>
+</div>
 
 </body>
 </html>
