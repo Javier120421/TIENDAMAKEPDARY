@@ -477,7 +477,7 @@
         window.open(url, '_blank');
       });
     });
-const carrito = [];
+  const carrito = [];
 
   function actualizarCarrito() {
     const lista = document.getElementById('lista-carrito');
@@ -526,19 +526,23 @@ const carrito = [];
     });
 
     mensaje += `\n💰 Total: $${total.toLocaleString()}`;
-
     const url = `https://wa.me/573222860592?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
   }
 
-  // Botones individuales de productos
+  function toggleCarrito() {
+    const carritoDiv = document.getElementById('carrito-flotante');
+    carritoDiv.style.display = carritoDiv.style.display === 'none' || carritoDiv.style.display === '' ? 'block' : 'none';
+  }
+
+  // Configuración de cada producto
   document.querySelectorAll('.producto').forEach(prod => {
     const boton = prod.querySelector('.boton-whatsapp');
     const nombre = prod.querySelector('.descripcion').innerText;
     const precioTexto = prod.querySelector('.precio').innerText;
     const precio = parseInt(precioTexto.replace(/\D/g, ''));
 
-    // Crear input de cantidad
+    // Input de cantidad
     const cantidadInput = document.createElement('input');
     cantidadInput.type = 'number';
     cantidadInput.value = 1;
@@ -546,7 +550,7 @@ const carrito = [];
     cantidadInput.style.width = '50px';
     cantidadInput.style.marginTop = '6px';
 
-    // Crear botón añadir al carrito
+    // Botón añadir al carrito
     const botonCarrito = document.createElement('button');
     botonCarrito.textContent = "Añadir al carrito";
     botonCarrito.style.marginTop = "6px";
@@ -560,17 +564,18 @@ const carrito = [];
 
     botonCarrito.onclick = () => {
       const cantidad = parseInt(cantidadInput.value);
-      if (cantidad > 0) agregarAlCarrito(nombre, precio, cantidad);
+      if (cantidad > 0) {
+        agregarAlCarrito(nombre, precio, cantidad);
+      }
     };
 
-    // Contenedor de input y botón
     const contenedorBotones = document.createElement('div');
     contenedorBotones.style.marginTop = "8px";
     contenedorBotones.appendChild(cantidadInput);
     contenedorBotones.appendChild(botonCarrito);
     prod.appendChild(contenedorBotones);
 
-    // Funcionalidad del botón WhatsApp individual
+    // Función botón individual WhatsApp
     boton.onclick = () => {
       const imgSrc = prod.querySelector('img').src;
       const mensaje = `Hola, vi este producto en DARYMAKEUP y estoy interesado:\n\n🖼️ Imagen: ${imgSrc}\n📝 Descripción: ${nombre}\n💰 Precio: ${precioTexto}`;
@@ -580,11 +585,29 @@ const carrito = [];
   });
   </script>
 
-<!-- Botón flotante del carrito -->
+<!-- Ícono flotante del carrito -->
+<button onclick="toggleCarrito()" style="
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: #ff4081;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  z-index: 9999;
+  cursor: pointer;
+">🛒</button>
+
+<!-- Contenedor del carrito (inicialmente oculto) -->
 <div id="carrito-flotante" style="
+  display: none;
   position: fixed; 
   top: 50%; 
-  right: 10px; 
+  right: 70px; 
   background-color: #fff; 
   color: #000; 
   padding: 15px; 
@@ -599,6 +622,7 @@ const carrito = [];
   <p id="total">Total: $0</p>
   <button onclick="enviarWhatsApp()" style="margin-top: 10px; background-color: #25D366; color: #fff; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">Comprar por WhatsApp</button>
 </div>
+
 
 </body>
 </html>
