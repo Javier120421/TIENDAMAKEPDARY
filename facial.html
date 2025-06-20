@@ -439,16 +439,11 @@ header h1 {
 
       const mensaje = `Hola, vi este producto en DARYMAKEUP y estoy interesado:\n\n🖼️ Imagen: ${imgSrc}\n📝 Descripción: ${descripcion}`;
       const url = `https://wa.me/573222860592?text=${encodeURIComponent(mensaje)}`;
-
       window.open(url, '_blank');
     });
   });
 
-  let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-
-  function guardarCarrito() {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-  }
+  const carrito = [];
 
   function actualizarCarrito() {
     const lista = document.getElementById('lista-carrito');
@@ -461,27 +456,34 @@ header h1 {
 
       const li = document.createElement('li');
       li.style.marginBottom = '10px';
+      li.style.display = 'flex';
+      li.style.alignItems = 'center';
 
-      const img = document.createElement('img');
-      img.src = item.img;
-      img.alt = item.nombre;
-      img.style.width = '40px';
-      img.style.height = '40px';
-      img.style.objectFit = 'cover';
-      img.style.borderRadius = '5px';
-      img.style.marginRight = '8px';
-      img.style.verticalAlign = 'middle';
+      const imagen = document.createElement('img');
+      imagen.src = item.imagen;
+      imagen.style.width = '40px';
+      imagen.style.height = '40px';
+      imagen.style.borderRadius = '4px';
+      imagen.style.marginRight = '8px';
+      imagen.style.cursor = 'pointer';
+      imagen.addEventListener('click', () => {
+        document.getElementById('imagen-ampliada').src = item.imagen;
+        document.getElementById('modal-imagen').style.display = 'flex';
+      });
+
+      const texto = document.createElement('span');
+      texto.textContent = `${item.nombre} - $${(item.precio * item.cantidad).toLocaleString()} `;
 
       const inputCantidad = document.createElement('input');
       inputCantidad.type = 'number';
       inputCantidad.value = item.cantidad;
       inputCantidad.min = 1;
       inputCantidad.style.width = '40px';
+      inputCantidad.style.marginLeft = '5px';
       inputCantidad.onchange = () => {
         const nuevaCantidad = parseInt(inputCantidad.value);
         if (nuevaCantidad > 0) {
           item.cantidad = nuevaCantidad;
-          guardarCarrito();
           actualizarCarrito();
         }
       };
@@ -495,8 +497,8 @@ header h1 {
       eliminarBtn.style.border = 'none';
       eliminarBtn.style.cursor = 'pointer';
 
-      li.appendChild(img);
-      li.appendChild(document.createTextNode(`${item.nombre} - $${(item.precio * item.cantidad).toLocaleString()} x`));
+      li.appendChild(imagen);
+      li.appendChild(texto);
       li.appendChild(inputCantidad);
       li.appendChild(eliminarBtn);
 
@@ -508,18 +510,16 @@ header h1 {
 
   function quitarDelCarrito(index) {
     carrito.splice(index, 1);
-    guardarCarrito();
     actualizarCarrito();
   }
 
-  function agregarAlCarrito(nombre, precio, cantidad = 1, img = '') {
+  function agregarAlCarrito(nombre, precio, cantidad = 1, imagen) {
     const existente = carrito.find(p => p.nombre === nombre);
     if (existente) {
       existente.cantidad += cantidad;
     } else {
-      carrito.push({ nombre, precio, cantidad, img });
+      carrito.push({ nombre, precio, cantidad, imagen });
     }
-    guardarCarrito();
     actualizarCarrito();
   }
 
@@ -545,13 +545,15 @@ header h1 {
     carritoDiv.style.display = (carritoDiv.style.display === 'none' || carritoDiv.style.display === '') ? 'block' : 'none';
   }
 
+  // Configura cada producto
   document.querySelectorAll('.producto').forEach(prod => {
     const boton = prod.querySelector('.boton-whatsapp');
     const nombre = prod.querySelector('.descripcion').innerText;
     const precioTexto = prod.querySelector('.precio').innerText;
     const precio = parseInt(precioTexto.replace(/\D/g, ''));
-    const img = prod.querySelector('img').src;
+    const imagenSrc = prod.querySelector('img').src;
 
+    // Campo cantidad
     const cantidadInput = document.createElement('input');
     cantidadInput.type = 'number';
     cantidadInput.value = 1;
@@ -559,6 +561,7 @@ header h1 {
     cantidadInput.style.width = '50px';
     cantidadInput.style.marginTop = '6px';
 
+    // Botón añadir al carrito
     const botonCarrito = document.createElement('button');
     botonCarrito.textContent = "Añadir al carrito";
     botonCarrito.style.marginTop = "6px";
@@ -573,7 +576,7 @@ header h1 {
     botonCarrito.onclick = () => {
       const cantidad = parseInt(cantidadInput.value);
       if (cantidad > 0) {
-        agregarAlCarrito(nombre, precio, cantidad, img);
+        agregarAlCarrito(nombre, precio, cantidad, imagenSrc);
       }
     };
 
@@ -583,13 +586,15 @@ header h1 {
     contenedorBotones.appendChild(botonCarrito);
     prod.appendChild(contenedorBotones);
 
+    // Botón WhatsApp individual
     boton.onclick = () => {
-      const mensaje = `Hola, vi este producto en DARYMAKEUP y estoy interesado:\n\n🖼️ Imagen: ${img}\n📝 Descripción: ${nombre}\n💰 Precio: ${precioTexto}`;
+      const mensaje = `Hola, vi este producto en DARYMAKEUP y estoy interesado:\n\n🖼️ Imagen: ${imagenSrc}\n📝 Descripción: ${nombre}\n💰 Precio: ${precioTexto}`;
       const url = `https://wa.me/573222860592?text=${encodeURIComponent(mensaje)}`;
       window.open(url, '_blank');
     };
   });
 
+  // Mostrar la imagen ampliada al hacer click en galería
   document.querySelectorAll('.producto img').forEach(imagen => {
     imagen.addEventListener('click', () => {
       document.getElementById('imagen-ampliada').src = imagen.src;
@@ -597,16 +602,17 @@ header h1 {
     });
   });
 
+  // Función para cerrar el modal
   function cerrarModal() {
     document.getElementById('modal-imagen').style.display = 'none';
   }
 
+  // Cierra el modal al hacer clic fuera de la imagen
   document.getElementById('modal-imagen').addEventListener('click', function(e) {
     if (e.target === this) cerrarModal();
   });
-
-  actualizarCarrito();
 </script>
+
 
 <!-- Ícono flotante del carrito -->
 <button onclick="toggleCarrito()" style="
